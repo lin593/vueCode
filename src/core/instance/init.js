@@ -1,7 +1,7 @@
 /* @flow */
 
 import config from '../config'
-import { initProxy } from './proxy'
+import { initProxy } from './proxy'  // ---> v1
 import { initState } from './state'
 import { initRender } from './render'
 import { initEvents } from './events'
@@ -29,6 +29,7 @@ export function initMixin (Vue: Class<Component>) {
     // a flag to avoid this being observed
     vm._isVue = true
     // merge options
+    debugger //林--合并配置
     if (options && options._isComponent) {
       // optimize internal component instantiation
       // since dynamic options merging is pretty slow, and none of the

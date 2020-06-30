@@ -137,7 +137,7 @@ export function createPatchFunction (backend) {
       // potential patch errors down the road when it's used as an insertion
       // reference node. Instead, we clone the node on-demand before creating
       // associated DOM element for it.
-      vnode = ownerArray[index] = cloneVNode(vnode)
+      vnode = ownerArray[index] = cloneVNode(vnode) // 林- 组件vnode
     }
 
     vnode.isRootInsert = !nested // for transition enter check
@@ -740,7 +740,7 @@ export function createPatchFunction (backend) {
           }
           // either not server-rendered, or hydration failed.
           // create an empty node and replace it
-          oldVnode = emptyNodeAt(oldVnode)
+          oldVnode = emptyNodeAt(oldVnode) // -- > 真实dom转换成vdom
         }
 
         // replacing existing element
@@ -749,7 +749,7 @@ export function createPatchFunction (backend) {
 
         // create new node
         createElm(
-          vnode,
+          vnode, // 挂载到真实的dom上
           insertedVnodeQueue,
           // extremely rare edge case: do not insert if old element is in a
           // leaving transition. Only happens when combining transition +

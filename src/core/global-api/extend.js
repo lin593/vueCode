@@ -16,27 +16,28 @@ export function initExtend (Vue: GlobalAPI) {
   /**
    * Class inheritance
    */
-  Vue.extend = function (extendOptions: Object): Function {
+  Vue.extend = function (extendOptions: Object): Function { // 林- 入口构造函数
     extendOptions = extendOptions || {}
-    const Super = this
-    const SuperId = Super.cid
+    const Super = this // => 指向Vue
+    const SuperId = Super.cid // 使对象拥有构造器的方法事件
+    // 林- 做了一层缓存的优化
     const cachedCtors = extendOptions._Ctor || (extendOptions._Ctor = {})
     if (cachedCtors[SuperId]) {
       return cachedCtors[SuperId]
     }
 
-    const name = extendOptions.name || Super.options.name
+    const name = extendOptions.name || Super.options.name //  组件的name
     if (process.env.NODE_ENV !== 'production' && name) {
-      validateComponentName(name)
+      validateComponentName(name) // 林-会进行一层校验--F:\LWF\demo\Vue源码\vue\src\core\util\options.js
     }
 
     const Sub = function VueComponent (options) {
       this._init(options)
     }
-    Sub.prototype = Object.create(Super.prototype)
-    Sub.prototype.constructor = Sub
+    Sub.prototype = Object.create(Super.prototype) 
+    Sub.prototype.constructor = Sub // 子的构造器原型指向父的原型
     Sub.cid = cid++
-    Sub.options = mergeOptions(
+    Sub.options = mergeOptions( // 做合并
       Super.options,
       extendOptions
     )
@@ -53,7 +54,7 @@ export function initExtend (Vue: GlobalAPI) {
     }
 
     // allow further extension/mixin/plugin usage
-    Sub.extend = Super.extend
+    Sub.extend = Super.extend // 全局方法进行赋值
     Sub.mixin = Super.mixin
     Sub.use = Super.use
 
@@ -76,7 +77,7 @@ export function initExtend (Vue: GlobalAPI) {
 
     // cache constructor
     cachedCtors[SuperId] = Sub
-    return Sub
+    return Sub //  林-通过原型的方式返回一个构造器
   }
 }
 

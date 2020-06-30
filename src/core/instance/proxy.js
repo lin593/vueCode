@@ -13,7 +13,7 @@ if (process.env.NODE_ENV !== 'production') {
     'require' // for Webpack/Browserify
   )
 
-  const warnNonPresent = (target, key) => {
+  const warnNonPresent = (target, key) => { //林-检测到相应的类型未在模板data中声明的错误
     warn(
       `Property or method "${key}" is not defined on the instance but ` +
       'referenced during render. Make sure that this property is reactive, ' +
@@ -76,7 +76,7 @@ if (process.env.NODE_ENV !== 'production') {
   }
 
   initProxy = function initProxy (vm) {
-    if (hasProxy) {
+    if (hasProxy) { // 林-检测浏览器是否支持，es6 提供的api，作用是对对象做劫持的
       // determine which proxy handler to use
       const options = vm.$options
       const handlers = options.render && options.render._withStripped

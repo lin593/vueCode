@@ -276,14 +276,14 @@ function checkComponents (options: Object) {
   }
 }
 
-export function validateComponentName (name: string) {
+export function validateComponentName (name: string) { // 林-进行校验
   if (!new RegExp(`^[a-zA-Z][\\-\\.0-9_${unicodeRegExp.source}]*$`).test(name)) {
     warn(
       'Invalid component name: "' + name + '". Component names ' +
       'should conform to valid custom element name in html5 specification.'
     )
   }
-  if (isBuiltInTag(name) || config.isReservedTag(name)) {
+  if (isBuiltInTag(name) || config.isReservedTag(name)) { // 林-内置的html标签检测
     warn(
       'Do not use built-in or reserved HTML elements as component ' +
       'id: ' + name

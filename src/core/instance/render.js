@@ -16,7 +16,7 @@ import VNode, { createEmptyVNode } from '../vdom/vnode'
 
 import { isUpdatingChildComponent } from './lifecycle'
 
-export function initRender (vm: Component) {
+export function initRender (vm: Component) { //  林-在这个阶段执行$createElement，initRender被执行是在init.js当中
   vm._vnode = null // the root of the child tree
   vm._staticTrees = null // v-once cached trees
   const options = vm.$options
@@ -31,7 +31,7 @@ export function initRender (vm: Component) {
   vm._c = (a, b, c, d) => createElement(vm, a, b, c, d, false)
   // normalization is always applied for the public version, used in
   // user-written render functions.
-  vm.$createElement = (a, b, c, d) => createElement(vm, a, b, c, d, true)
+  vm.$createElement = (a, b, c, d) => createElement(vm, a, b, c, d, true) // 林-手写vnode创建方法
 
   // $attrs & $listeners are exposed for easier HOC creation.
   // they need to be reactive so that HOCs using them are always updated
@@ -66,7 +66,7 @@ export function renderMixin (Vue: Class<Component>) {
     return nextTick(fn, this)
   }
 
-  Vue.prototype._render = function (): VNode { // vnode1
+  Vue.prototype._render = function (): VNode { // 林-vnode1
     const vm: Component = this
     const { render, _parentVnode } = vm.$options
 
@@ -88,7 +88,7 @@ export function renderMixin (Vue: Class<Component>) {
       // separately from one another. Nested component's render fns are called
       // when parent component is patched.
       currentRenderingInstance = vm
-      vnode = render.call(vm._renderProxy, vm.$createElement)  // render.call的返回值就是createElement的返回值，再还给了‘vnode1’的方法
+      vnode = render.call(vm._renderProxy, vm.$createElement)  // 林-render.call的返回值就是createElement的返回值，再还给了‘vnode1’的方法(执行上下文展开操作）
     } catch (e) {
       handleError(e, vm, `render`)
       // return error render result,

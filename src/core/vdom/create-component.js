@@ -98,10 +98,10 @@ const componentVNodeHooks = {
 
 const hooksToMerge = Object.keys(componentVNodeHooks)
 
-export function createComponent (
-  Ctor: Class<Component> | Function | Object | void,
+export function createComponent ( // 林- 组件化实现入口 createComponent
+  Ctor: Class<Component> | Function | Object | void, // 组件类型的类，函数，对象
   data: ?VNodeData,
-  context: Component,
+  context: Component, // 上下文，vm的实例
   children: ?Array<VNode>,
   tag?: string
 ): VNode | Array<VNode> | void {
@@ -109,8 +109,21 @@ export function createComponent (
     return
   }
 
-  const baseCtor = context.$options._base
+  const baseCtor = context.$options._base // 主要继承于大Vue
 
+/* context.$options._base 来自于  
+*1. 初始化全局api的时候
+*   F:\LWF\demo\Vue源码\vue\src\core\global-api\index.js (  Vue.options._base = Vue)
+* 2. 合并options
+*   F:\LWF\demo\Vue源码\vue\src\core\instance\init.js
+vm.$options = mergeOptions(
+        resolveConstructorOptions(vm.constructor),
+        options || {},
+        vm
+      )
+*
+*
+*/
   // plain options object: turn it into a constructor
   if (isObject(Ctor)) {
     Ctor = baseCtor.extend(Ctor)
@@ -118,7 +131,7 @@ export function createComponent (
 
   // if at this stage it's not a constructor or an async component factory,
   // reject.
-  if (typeof Ctor !== 'function') {
+  if (typeof Ctor !== 'function') { // 林- 构造器不能返回函数 src\core\global-api\extend.js
     if (process.env.NODE_ENV !== 'production') {
       warn(`Invalid Component definition: ${String(Ctor)}`, context)
     }
@@ -165,7 +178,7 @@ export function createComponent (
 
   // extract listeners, since these needs to be treated as
   // child component listeners instead of DOM listeners
-  const listeners = data.on
+  const listeners = data.on // 自定义组件的处理
   // replace with listeners with .native modifier
   // so it gets processed during parent component patch.
   data.on = data.nativeOn
@@ -183,7 +196,7 @@ export function createComponent (
   }
 
   // install component management hooks onto the placeholder node
-  installComponentHooks(data)
+  installComponentHooks(data) // 安装组件的钩子
 
   // return a placeholder vnode
   const name = Ctor.options.name || tag
