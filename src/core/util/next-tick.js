@@ -15,7 +15,7 @@ function flushCallbacks () {
   const copies = callbacks.slice(0)
   callbacks.length = 0
   for (let i = 0; i < copies.length; i++) {
-    copies[i]()
+    copies[i]()  // 林 - 问题 - 看下是如何重新再执行调用下一个梯度的nextTick
   }
 }
 
@@ -39,7 +39,7 @@ let timerFunc
 // completely stops working after triggering a few times... so, if native
 // Promise is available, we will use it:
 /* istanbul ignore next, $flow-disable-line */
-if (typeof Promise !== 'undefined' && isNative(Promise)) {
+if (typeof Promise !== 'undefined' && isNative(Promise)) { //林-判断浏览器是否支持
   const p = Promise.resolve()
   timerFunc = () => {
     p.then(flushCallbacks)
@@ -86,8 +86,8 @@ if (typeof Promise !== 'undefined' && isNative(Promise)) {
 
 export function nextTick (cb?: Function, ctx?: Object) {
   let _resolve
-  callbacks.push(() => {
-    if (cb) {
+  callbacks.push(() => { // 林-将cb函数进行try。。catch判断没问题就添加到callbacks中，让flushCallbacks函数调用执行遍历
+    if (cb) { // 避免回调函数会发生错误导致下面的执行
       try {
         cb.call(ctx)
       } catch (e) {
@@ -97,14 +97,23 @@ export function nextTick (cb?: Function, ctx?: Object) {
       _resolve(ctx)
     }
   })
-  if (!pending) {
+  if (!pending) { // 确保函数只执行一次
     pending = true
     timerFunc()
   }
   // $flow-disable-line
-  if (!cb && typeof Promise !== 'undefined') {
+  if (!cb && typeof Promise !== 'undefined') { // 如果不添加到数组的形式执行，如果Promise事件存在那么执行定义Promise实例供then调用
     return new Promise(resolve => {
       _resolve = resolve
     })
   }
 }
+
+// // 通过添加数据到callback，在遍历执行回调nextTick
+// this.$nextTick(()=> {
+//   console.log(this.$refs.msg.innerText);
+// })
+// // 通过不添加数据到callback，自定义Promise的实例对象执行异步.then执行出数据
+// this.$nextTick().then(()=> {
+//   console.log(this.$refs.msg.innerText);
+// })

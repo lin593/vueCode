@@ -51,10 +51,12 @@ export function initState (vm: Component) {
   if (opts.props) initProps(vm, opts.props)
   if (opts.methods) initMethods(vm, opts.methods)
   if (opts.data) {
-    initData(vm)
+    initData(vm) // 林-在init中执行initState会过来重新执行initData
   } else {
     observe(vm._data = {}, true /* asRootData */)
   }
+  debugger 
+  // computed 调试 
   if (opts.computed) initComputed(vm, opts.computed)
   if (opts.watch && opts.watch !== nativeWatch) {
     initWatch(vm, opts.watch)
@@ -85,7 +87,7 @@ function initProps (vm: Component, propsOptions: Object) {
           vm
         )
       }
-      defineReactive(props, key, value, () => {
+      defineReactive(props, key, value, () => { // 林-这里就是将key变成响应式的
         if (!isRoot && !isUpdatingChildComponent) {
           warn(
             `Avoid mutating a prop directly since the value will be ` +
@@ -144,11 +146,11 @@ function initData (vm: Component) {
         vm
       )
     } else if (!isReserved(key)) {
-      proxy(vm, `_data`, key)
+      proxy(vm, `_data`, key) // 林-把data的东西弄到vm实例上
     }
   }
   // observe data
-  observe(data, true /* asRootData */)
+  observe(data, true /* asRootData */) // 林-开启响应式
 }
 
 export function getData (data: Function, vm: Component): any {
@@ -184,7 +186,7 @@ function initComputed (vm: Component, computed: Object) {
 
     if (!isSSR) {
       // create internal watcher for the computed property.
-      watchers[key] = new Watcher(
+      watchers[key] = new Watcher( // 林- computed 是通过watcher实现的
         vm,
         getter || noop,
         noop,
@@ -300,7 +302,7 @@ function initWatch (vm: Component, watch: Object) {
   }
 }
 
-function createWatcher (
+function createWatcher ( // 林-数据规范化
   vm: Component,
   expOrFn: string | Function,
   handler: any,

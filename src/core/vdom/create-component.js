@@ -66,9 +66,9 @@ const componentVNodeHooks = {
 
   insert (vnode: MountedComponentVNode) {
     const { context, componentInstance } = vnode
-    if (!componentInstance._isMounted) {
+    if (!componentInstance._isMounted) { // 判断子组件是否存在 _isMounted
       componentInstance._isMounted = true
-      callHook(componentInstance, 'mounted')
+      callHook(componentInstance, 'mounted') // 子组件的mounted 会优先于 父组件，子组件的vnode优先插入队列，会先执行 （先子后父）
     }
     if (vnode.data.keepAlive) {
       if (context._isMounted) {

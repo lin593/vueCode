@@ -43,7 +43,7 @@ export function initGlobalAPI (Vue: GlobalAPI) {
 
   Vue.set = set
   Vue.delete = del
-  Vue.nextTick = nextTick
+  Vue.nextTick = nextTick // 林-原型上调用nextTick静态方法
 
   // 2.6 explicit observable API
   Vue.observable = <T>(obj: T): T => {

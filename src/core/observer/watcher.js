@@ -99,7 +99,7 @@ export default class Watcher {
    * Evaluate the getter, and re-collect dependencies.
    */
   get () {
-    pushTarget(this)
+    pushTarget(this) // 林-把当前的watcher作为计算中的watcher
     let value
     const vm = this.vm
     try {
@@ -141,7 +141,7 @@ export default class Watcher {
    */
   cleanupDeps () {
     let i = this.deps.length
-    while (i--) {
+    while (i--) { // 林- 检测是否有订阅者，如果有那么就删除（不会重复添加旧的）
       const dep = this.deps[i]
       if (!this.newDepIds.has(dep.id)) {
         dep.removeSub(this)

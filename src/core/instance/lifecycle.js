@@ -138,7 +138,7 @@ export function lifecycleMixin (Vue: Class<Component>) {
   }
 }
 
-export function mountComponent (
+export function mountComponent ( // 林- 子组件执行的时候先调用
   vm: Component,
   el: ?Element,
   hydrating?: boolean
@@ -164,7 +164,7 @@ export function mountComponent (
       }
     }
   }
-  callHook(vm, 'beforeMount')
+  callHook(vm, 'beforeMount') // 先父后子
 
   let updateComponent
   /* istanbul ignore if */
@@ -187,16 +187,16 @@ export function mountComponent (
     }
   } else {
     updateComponent = () => { // 
-      vm._update(vm._render(), hydrating)
+      vm._update(vm._render(), hydrating) // 重新渲染vnode
     }
   }
 
   // we set this to vm._watcher inside the watcher's constructor
   // since the watcher's initial patch may call $forceUpdate (e.g. inside child
   // component's mounted hook), which relies on vm._watcher being already defined
-  new Watcher(vm, updateComponent, noop, { // 渲染 watcher
+  new Watcher(vm, updateComponent, noop, { //林- 渲染 watcher 数据发生变化后就会触发 
     before () {
-      if (vm._isMounted && !vm._isDestroyed) {
+      if (v m._isMounted && !vm._isDestroyed) {
         callHook(vm, 'beforeUpdate')
       }
     }

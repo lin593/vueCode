@@ -40,7 +40,7 @@ export function createAsyncPlaceholder (
   return node
 }
 
-export function resolveAsyncComponent (
+export function resolveAsyncComponent ( //  林-先组件的加载
   factory: Function,
   baseCtor: Class<Component>
 ): Class<Component> | void {
@@ -111,7 +111,7 @@ export function resolveAsyncComponent (
       }
     })
 
-    const res = factory(resolve, reject)
+    const res = factory(resolve, reject) // 林-factory 会返回一个对象
 
     if (isObject(res)) {
       if (isPromise(res)) {
@@ -123,27 +123,27 @@ export function resolveAsyncComponent (
         res.component.then(resolve, reject)
 
         if (isDef(res.error)) {
-          factory.errorComp = ensureCtor(res.error, baseCtor)
+          factory.errorComp = ensureCtor(res.error, baseCtor) // 构造器转换
         }
 
         if (isDef(res.loading)) {
           factory.loadingComp = ensureCtor(res.loading, baseCtor)
-          if (res.delay === 0) {
+          if (res.delay === 0) { // 如果执行component未成功
             factory.loading = true
           } else {
             timerLoading = setTimeout(() => {
               timerLoading = null
               if (isUndef(factory.resolved) && isUndef(factory.error)) {
                 factory.loading = true
-                forceRender(false)
+                forceRender(false) // 会再执行多一遍操作
               }
             }, res.delay || 200)
           }
         }
 
         if (isDef(res.timeout)) {
-          timerTimeout = setTimeout(() => {
-            timerTimeout = null
+          timerTimeout = setTimeout(() => { // 林-执行在某个时间里如果这个值还不存在就去报错
+            timerTimeout = null 
             if (isUndef(factory.resolved)) {
               reject(
                 process.env.NODE_ENV !== 'production'

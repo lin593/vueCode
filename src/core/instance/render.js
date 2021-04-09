@@ -62,7 +62,7 @@ export function renderMixin (Vue: Class<Component>) {
   // install runtime convenience helpers
   installRenderHelpers(Vue.prototype)
 
-  Vue.prototype.$nextTick = function (fn: Function) {
+  Vue.prototype.$nextTick = function (fn: Function) { // 林-原型上调用nextTick
     return nextTick(fn, this)
   }
 

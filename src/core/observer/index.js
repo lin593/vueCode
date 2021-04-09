@@ -34,7 +34,7 @@ export function toggleObserving (value: boolean) {
  * object's property keys into getter/setters that
  * collect dependencies and dispatch updates.
  */
-export class Observer {
+export class Observer { // 林-可观察者模式
   value: any;
   dep: Dep;
   vmCount: number; // number of vms that have this object as root $data
@@ -107,7 +107,7 @@ function copyAugment (target: Object, src: Object, keys: Array<string>) {
  * returns the new observer if successfully observed,
  * or the existing observer if the value already has one.
  */
-export function observe (value: any, asRootData: ?boolean): Observer | void {
+export function observe (value: any, asRootData: ?boolean): Observer | void {  // 林-observe入口
   if (!isObject(value) || value instanceof VNode) {
     return
   }
@@ -118,7 +118,7 @@ export function observe (value: any, asRootData: ?boolean): Observer | void {
     shouldObserve &&
     !isServerRendering() &&
     (Array.isArray(value) || isPlainObject(value)) &&
-    Object.isExtensible(value) &&
+    Object.isExtensible(value) && // isExtensible可拓展
     !value._isVue
   ) {
     ob = new Observer(value)
@@ -154,13 +154,14 @@ export function defineReactive (
   }
 
   let childOb = !shallow && observe(val)
-  Object.defineProperty(obj, key, {
-    enumerable: true,
+  Object.defineProperty(obj, key, { //林-响应式对象就是把他变成get和set
+
+    enumerable: true, // 是否，枚举
     configurable: true,
     get: function reactiveGetter () {
       const value = getter ? getter.call(obj) : val
-      if (Dep.target) {
-        dep.depend()
+      if (Dep.target) { // 将数据变化订阅到watcher中 
+        dep.depend() // 林-依赖收集执行到dep.js执行 ，收集watcher
         if (childOb) {
           childOb.dep.depend()
           if (Array.isArray(value)) {
@@ -188,7 +189,7 @@ export function defineReactive (
         val = newVal
       }
       childOb = !shallow && observe(newVal)
-      dep.notify()
+      dep.notify() // 林-派发更新的过程
     }
   })
 }

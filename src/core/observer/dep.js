@@ -30,7 +30,7 @@ export default class Dep {
 
   depend () {
     if (Dep.target) {
-      Dep.target.addDep(this)
+      Dep.target.addDep(this) // 林-回到watcher执行添加，类似执行addSub的方法进行push数据
     }
   }
 
@@ -52,14 +52,14 @@ export default class Dep {
 // The current target watcher being evaluated.
 // This is globally unique because only one watcher
 // can be evaluated at a time.
-Dep.target = null
+Dep.target = null // 林-初始化-1
 const targetStack = []
 
 export function pushTarget (target: ?Watcher) {
   targetStack.push(target)
-  Dep.target = target
+  Dep.target = target // 林-如果没有的话赋值到最外层渲染的watcher-2
 }
-
+   
 export function popTarget () {
   targetStack.pop()
   Dep.target = targetStack[targetStack.length - 1]

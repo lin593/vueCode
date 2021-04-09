@@ -451,8 +451,8 @@ export function resolveAsset (
   }
   const assets = options[type]
   // check local registration variations first
-  if (hasOwn(assets, id)) return assets[id]
-  const camelizedId = camelize(id)
+  if (hasOwn(assets, id)) return assets[id] // 自身属性下有这个id
+  const camelizedId = camelize(id) // 驼峰转换
   if (hasOwn(assets, camelizedId)) return assets[camelizedId]
   const PascalCaseId = capitalize(camelizedId)
   if (hasOwn(assets, PascalCaseId)) return assets[PascalCaseId]

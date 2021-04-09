@@ -580,7 +580,8 @@ export function createPatchFunction (backend) {
       vnode.parent.data.pendingInsert = queue
     } else {
       for (let i = 0; i < queue.length; ++i) {
-        queue[i].data.hook.insert(queue[i])
+        queue[i].data.hook.insert(queue[i]) // 林- queue[i]相当于vnode，定义一个insert的hook -- 定义位置F:\LWF\demo\Vue源码\vue\src\core\vdom\create-component.js
+
       }
     }
   }

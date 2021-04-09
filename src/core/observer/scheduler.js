@@ -16,7 +16,7 @@ export const MAX_UPDATE_COUNT = 100
 
 const queue: Array<Watcher> = []
 const activatedChildren: Array<Component> = []
-let has: { [key: number]: ?true } = {}
+let has: { [key: number]: ?true } = {} // 林-是否重复添加
 let circular: { [key: number]: number } = {}
 let waiting = false
 let flushing = false
@@ -68,7 +68,7 @@ if (inBrowser && !isIE) {
 /**
  * Flush both queues and run the watchers.
  */
-function flushSchedulerQueue () {
+function flushSchedulerQueue () { // 林 - 入口
   currentFlushTimestamp = getNow()
   flushing = true
   let watcher, id
@@ -81,7 +81,7 @@ function flushSchedulerQueue () {
   //    user watchers are created before the render watcher)
   // 3. If a component is destroyed during a parent component's watcher run,
   //    its watchers can be skipped.
-  queue.sort((a, b) => a.id - b.id)
+  queue.sort((a, b) => a.id - b.id) // 林-从小到大的排列
 
   // do not cache length because more watchers might be pushed
   // as we run existing watchers
@@ -92,9 +92,9 @@ function flushSchedulerQueue () {
     }
     id = watcher.id
     has[id] = null
-    watcher.run()
+    watcher.run() //watcher
     // in dev build, check and stop circular updates.
-    if (process.env.NODE_ENV !== 'production' && has[id] != null) {
+    if (process.env.NODE_ENV !== 'production' && has[id] != null) { // 林-判断是否无限循环
       circular[id] = (circular[id] || 0) + 1
       if (circular[id] > MAX_UPDATE_COUNT) {
         warn(
@@ -132,8 +132,8 @@ function callUpdatedHooks (queue) {
   while (i--) {
     const watcher = queue[i]
     const vm = watcher.vm
-    if (vm._watcher === watcher && vm._isMounted && !vm._isDestroyed) {
-      callHook(vm, 'updated')
+    if (vm._watcher === watcher && vm._isMounted && !vm._isDestroyed) { // 判断说明当前是否为渲染watcher
+      callHook(vm, 'updated') // 触发更新视图
     }
   }
 }
